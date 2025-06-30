@@ -63,13 +63,10 @@ This URL is stored as assetName and displayed in the FFP list.
 
 # Folder Structure (Important Files)
 pages/
-├── ffps.tsx
-# Admin dashboard for FFPs
-├── login.tsx   
-# Login page
+├── ffps.tsx                # Admin dashboard for FFPs
+├── login.tsx               # Login page
 ├── api/
-│   ├── ffps/        
-# CRUD for FFPs
+│   ├── ffps/               # CRUD for FFPs
 │   ├── cards/              # Get credit cards
 │   ├── login.ts            # Auth
 │   ├── me.ts               # Session check
