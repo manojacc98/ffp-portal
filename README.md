@@ -30,7 +30,7 @@ It allows admins to manage **Frequent Flyer Programs (FFPs)**, their **logos**, 
 
 ##  Live Demo
 
-[Click to View Deployed App]([https://your-vercel-url.vercel.app]https://ffp-portal-l4amogy0e-manojs-projects-4ea21a96.vercel.app)
+[Click to View Deployed App][https://your-vercel-url.vercel.app]https://ffp-portal-l4amogy0e-manojs-projects-4ea21a96.vercel.app
 
 ---
 
