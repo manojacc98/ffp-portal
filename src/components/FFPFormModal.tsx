@@ -27,7 +27,8 @@ export default function FFPFormModal({
   initialData,
   creditCards
 }: FFPFormProps) {
-  const [form, setForm] = useState<Partial<FFP>>({
+  const [form, setForm] = useState<FFP>({
+    id: 0,
     name: '',
     assetName: '',
     enabled: false,
@@ -47,6 +48,7 @@ export default function FFPFormModal({
       setForm(initialData)
     } else {
       setForm({
+        id: 0,
         name: '',
         assetName: '',
         enabled: false,
@@ -102,7 +104,6 @@ export default function FFPFormModal({
         method: 'POST',
         body: formData,
       })
-
       const data = await res.json()
       if (!res.ok || !data.url) throw new Error('Upload failed')
       setForm((prev) => ({ ...prev, assetName: data.url }))
@@ -141,6 +142,7 @@ export default function FFPFormModal({
           {initialData ? 'Update FFP' : 'Add FFP'}
         </h2>
 
+        {/* Name input */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
           <input
@@ -152,6 +154,7 @@ export default function FFPFormModal({
           />
         </div>
 
+        {/* Logo upload */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">Upload Logo</label>
           <input
@@ -172,6 +175,7 @@ export default function FFPFormModal({
           )}
         </div>
 
+        {/* Checkboxes */}
         <div className="flex gap-4 mb-4">
           <label className="inline-flex items-center">
             <input
@@ -183,7 +187,6 @@ export default function FFPFormModal({
             />
             <span className="ml-2 text-sm text-gray-700">Enabled</span>
           </label>
-
           <label className="inline-flex items-center">
             <input
               type="checkbox"
@@ -196,11 +199,11 @@ export default function FFPFormModal({
           </label>
         </div>
 
+        {/* Transfer Ratios */}
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-700 mb-1">Add Transfer Ratios</label>
           <div className="flex items-center gap-2">
             <select
-              name="creditCardId"
               value={newRatio.creditCardId}
               onChange={(e) => setNewRatio({ ...newRatio, creditCardId: e.target.value })}
               className="flex-1 border rounded px-3 py-2 focus:outline-none"
@@ -214,7 +217,6 @@ export default function FFPFormModal({
             </select>
             <input
               type="number"
-              name="ratio"
               value={newRatio.ratio}
               onChange={(e) => setNewRatio({ ...newRatio, ratio: parseFloat(e.target.value) })}
               className="w-20 border rounded px-2 py-2"
@@ -226,11 +228,29 @@ export default function FFPFormModal({
               onClick={handleAddRatio}
               className="bg-green-600 text-white p-2 rounded hover:bg-green-700"
             >
-              +
+              <FaPlus />
             </button>
           </div>
+          {form.ratios.length > 0 && (
+            <ul className="mt-2">
+              {form.ratios.map((r) => (
+                <li key={r.id} className="flex justify-between items-center border-b py-1">
+                  <span>
+                    Card #{r.creditCardId} → {r.ratio}
+                  </span>
+                  <button
+                    onClick={() => handleDeleteRatio(r.id!)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <FaTrash />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
+        {/* Actions */}
         <div className="flex justify-end gap-4">
           <button
             onClick={onClose}
