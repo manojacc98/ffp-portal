@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { FaPlus, FaTrash } from 'react-icons/fa'
-import { CreditCard } from '../../types/card'
+import { CreditCard } from '@/types/card'
 
-import { FFP } from '../../types/ffp'
+
+import { FFP } from '@/types/ffp'
+
 
 
 export type Ratio = {
