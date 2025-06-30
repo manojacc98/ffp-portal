@@ -12,6 +12,9 @@ export default function FFPListPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedFFP, setSelectedFFP] = useState<FFP | undefined>()
   const [authChecked, setAuthChecked] = useState(false)
+  const [page, setPage] = useState(1)
+  const [total, setTotal] = useState(0)
+  const pageSize = 5
   const router = useRouter()
 
   useEffect(() => {
@@ -24,17 +27,18 @@ export default function FFPListPage() {
       .catch(() => router.replace('/login'))
   }, [])
 
-  const fetchFfps = async () => {
-    const res = await fetch('/api/ffps')
+  const fetchFfps = async (page: number) => {
+    const res = await fetch(`/api/ffps?page=${page}&pageSize=${pageSize}`)
     const data = await res.json()
-    setFfps(data)
+    setFfps(data.ffps)
+    setTotal(data.total)
   }
 
   useEffect(() => {
     if (!authChecked) return
-    fetchFfps()
+    fetchFfps(page)
     fetch('/api/cards').then(res => res.json()).then(setCreditCards)
-  }, [authChecked])
+  }, [authChecked, page])
 
   const handleToggle = async (id: number) => {
     const res = await fetch(`/api/ffps/${id}/toggle`, { method: 'PUT' })
@@ -45,7 +49,7 @@ export default function FFPListPage() {
   }
 
   const handleSave = async () => {
-    await fetchFfps()
+    await fetchFfps(page)
     setIsModalOpen(false)
     setSelectedFFP(undefined)
   }
@@ -59,7 +63,7 @@ export default function FFPListPage() {
     })
 
     if (res.ok) {
-      await fetchFfps()
+      await fetchFfps(page)
     } else {
       alert('Failed to delete FFP')
     }
@@ -114,11 +118,10 @@ export default function FFPListPage() {
                 <td className="p-3 border">{ffp.name}</td>
                 <td className="p-3 border">
                   <img
-                      src={ffp.assetName}
-                      alt={ffp.name}
-                      className="h-6 w-auto object-contain"
+                    src={ffp.assetName}
+                    alt={ffp.name}
+                    className="h-6 w-auto object-contain"
                   />
-
                 </td>
                 <td className="p-3 border">
                   <button
@@ -161,6 +164,27 @@ export default function FFPListPage() {
         </table>
       </div>
 
+      {/* Pagination Controls */}
+      <div className="flex justify-between mt-6">
+        <button
+          disabled={page === 1}
+          onClick={() => setPage((p) => Math.max(1, p - 1))}
+          className="px-4 py-2 bg-gray-200 text-gray-700 rounded disabled:opacity-50"
+        >
+          Previous
+        </button>
+        <span className="text-gray-600">
+          Page {page} of {Math.ceil(total / pageSize)}
+        </span>
+        <button
+          disabled={page * pageSize >= total}
+          onClick={() => setPage((p) => p + 1)}
+          className="px-4 py-2 bg-gray-200 text-gray-700 rounded disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
+
       <FFPFormModal
         isOpen={isModalOpen}
         onClose={() => {
@@ -174,4 +198,3 @@ export default function FFPListPage() {
     </div>
   )
 }
-

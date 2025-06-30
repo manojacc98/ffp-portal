@@ -7,12 +7,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   switch (req.method) {
     case 'GET':
       try {
-        const ffps = await prisma.frequentFlyerProgram.findMany({
-          include: {
-            ratios: true,
-          },
-        })
-        return res.status(200).json(ffps)
+        const page = parseInt(req.query.page as string) || 1
+        const pageSize = parseInt(req.query.pageSize as string) || 5
+        const skip = (page - 1) * pageSize
+
+        const [ffps, total] = await Promise.all([
+          prisma.frequentFlyerProgram.findMany({
+            skip,
+            take: pageSize,
+            orderBy: { id: 'asc' }, // consistent ordering
+            include: { ratios: true },
+          }),
+          prisma.frequentFlyerProgram.count(),
+        ])
+
+        return res.status(200).json({ ffps, total, page, pageSize })
       } catch (error) {
         console.error('Error fetching FFPs:', error)
         return res.status(500).json({ message: 'Error fetching FFPs', error })
