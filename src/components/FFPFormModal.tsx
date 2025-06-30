@@ -4,13 +4,7 @@ import { useState, useEffect } from 'react'
 import { FaPlus, FaTrash } from 'react-icons/fa'
 import { CreditCard } from '@/types/card'
 import { FFP } from '@/types/ffp'
-
-export type Ratio = {
-  id?: number
-  creditCardId: number
-  ratio: number
-  ffpId?: number
-}
+import { Ratio } from '@/types/ratio'
 
 type FFPFormProps = {
   isOpen: boolean
@@ -38,7 +32,7 @@ export default function FFPFormModal({
     ratios: [],
   })
 
-  const [newRatio, setNewRatio] = useState<{ creditCardId: string; ratio: number }>({
+  const [newRatio, setNewRatio] = useState<{ creditCardId: number | ''; ratio: number }>({
     creditCardId: '',
     ratio: 1,
   })
@@ -61,24 +55,27 @@ export default function FFPFormModal({
   }, [initialData, isOpen])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value, type, checked } = e.target
-    setForm((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }))
+      const target = e.target
+      const name = target.name
+
+      if (target instanceof HTMLInputElement && target.type === 'checkbox') {
+        setForm((prev) => ({ ...prev, [name]: target.checked }))
+      } else {
+        setForm((prev) => ({ ...prev, [name]: target.value }))
+      }
   }
+
 
   const handleAddRatio = () => {
     const ratio = Number(newRatio.ratio)
     if (!newRatio.creditCardId || !ratio || ratio < 0.1 || ratio > 5) return
-    const newRatios = [
-      ...(form.ratios || []),
+    const newRatios: Ratio[] = [
+      ...form.ratios,
       {
-        ...newRatio,
         creditCardId: Number(newRatio.creditCardId),
         ratio,
         id: Date.now(),
-        ffpId: form.id || 0,
+        ffpId: form.id,
       },
     ]
     setForm((prev) => ({ ...prev, ratios: newRatios }))
@@ -88,7 +85,7 @@ export default function FFPFormModal({
   const handleDeleteRatio = (id: number) => {
     setForm((prev) => ({
       ...prev,
-      ratios: (prev.ratios || []).filter((r) => r.id !== id),
+      ratios: prev.ratios.filter((r) => r.id !== id),
     }))
   }
 
@@ -142,7 +139,6 @@ export default function FFPFormModal({
           {initialData ? 'Update FFP' : 'Add FFP'}
         </h2>
 
-        {/* Name input */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
           <input
@@ -154,7 +150,6 @@ export default function FFPFormModal({
           />
         </div>
 
-        {/* Logo upload */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">Upload Logo</label>
           <input
@@ -175,7 +170,6 @@ export default function FFPFormModal({
           )}
         </div>
 
-        {/* Checkboxes */}
         <div className="flex gap-4 mb-4">
           <label className="inline-flex items-center">
             <input
@@ -199,20 +193,17 @@ export default function FFPFormModal({
           </label>
         </div>
 
-        {/* Transfer Ratios */}
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-700 mb-1">Add Transfer Ratios</label>
           <div className="flex items-center gap-2">
             <select
               value={newRatio.creditCardId}
-              onChange={(e) => setNewRatio({ ...newRatio, creditCardId: e.target.value })}
+              onChange={(e) => setNewRatio({ ...newRatio, creditCardId: parseInt(e.target.value) })}
               className="flex-1 border rounded px-3 py-2 focus:outline-none"
             >
               <option value="">Select Credit Card</option>
               {creditCards.map((card) => (
-                <option key={card.id} value={card.id.toString()}>
-                  {card.name}
-                </option>
+                <option key={card.id} value={card.id}>{card.name}</option>
               ))}
             </select>
             <input
@@ -235,13 +226,8 @@ export default function FFPFormModal({
             <ul className="mt-2">
               {form.ratios.map((r) => (
                 <li key={r.id} className="flex justify-between items-center border-b py-1">
-                  <span>
-                    Card #{r.creditCardId} → {r.ratio}
-                  </span>
-                  <button
-                    onClick={() => handleDeleteRatio(r.id!)}
-                    className="text-red-500 hover:text-red-700"
-                  >
+                  <span>Card #{r.creditCardId} → {r.ratio}</span>
+                  <button onClick={() => handleDeleteRatio(r.id!)} className="text-red-500 hover:text-red-700">
                     <FaTrash />
                   </button>
                 </li>
@@ -250,7 +236,6 @@ export default function FFPFormModal({
           )}
         </div>
 
-        {/* Actions */}
         <div className="flex justify-end gap-4">
           <button
             onClick={onClose}

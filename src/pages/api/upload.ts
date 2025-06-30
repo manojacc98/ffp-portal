@@ -31,7 +31,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(500).json({ error: 'Failed to parse form' })
     }
 
-    const file = files.file as File
+    const uploaded = files.file
+    const file = Array.isArray(uploaded) ? uploaded[0] : uploaded
     const filePath = file?.filepath
 
     if (!filePath) {
@@ -48,7 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.error('Upload failed:', uploadErr)
       return res.status(500).json({ error: 'Upload failed' })
     } finally {
-      fs.unlink(filePath, () => {}) // cleanup temp file
+      fs.unlink(filePath, () => {}) // cleanup
     }
   })
 }

@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { verifyAuth } from '../../../lib/auth'
+import { verifyAuth } from '@/lib/auth'
+
 
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
