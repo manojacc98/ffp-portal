@@ -225,7 +225,7 @@ export default function FFPFormModal({
             >
               <option value="">Select Credit Card</option>
               {creditCards.map((card) => (
-                <option key={card.id} value={card.id}>
+                <option key={card.id} value={card.id.toString()}>
                   {card.name}
                 </option>
               ))}
