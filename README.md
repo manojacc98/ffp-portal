@@ -1,6 +1,6 @@
 # FFP Portal – Pneuma FSE Intern Challenge
 
-This is a single-page admin portal built using **Next.js** (with API Routes), **TypeScript**, **Tailwind CSS**, and **SQLite + Prisma ORM**. 
+This is a single-page admin portal built using **Next.js** (with API Routes), **TypeScript**, **Tailwind CSS**, and **PostgreSQL + Prisma ORM**. 
 It allows admins to manage **Frequent Flyer Programs (FFPs)**, their **logos**, and **transfer ratios** with Credit Card partners.
 
 ---
@@ -30,10 +30,7 @@ It allows admins to manage **Frequent Flyer Programs (FFPs)**, their **logos**, 
 
 ##  Live Demo
 
-[Click to View Deployed App]([https://your-vercel-url.vercel.app](https://ffp-portal-l4amogy0e-manojs-projects-4ea21a96.vercel.app
-))
-
-> You’ll need to login with the correct username and password to access the portal.
+[Click to View Deployed App]([https://your-vercel-url.vercel.app]https://ffp-portal-l4amogy0e-manojs-projects-4ea21a96.vercel.app
 
 ---
 
