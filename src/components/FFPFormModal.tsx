@@ -3,11 +3,7 @@
 import { useState, useEffect } from 'react'
 import { FaPlus, FaTrash } from 'react-icons/fa'
 import { CreditCard } from '@/types/card'
-
-
 import { FFP } from '@/types/ffp'
-
-
 
 export type Ratio = {
   id?: number
@@ -31,8 +27,7 @@ export default function FFPFormModal({
   initialData,
   creditCards
 }: FFPFormProps) {
-  const [form, setForm] = useState<FFP>({
-    id: '0',
+  const [form, setForm] = useState<Partial<FFP>>({
     name: '',
     assetName: '',
     enabled: false,
@@ -43,17 +38,15 @@ export default function FFPFormModal({
   })
 
   const [newRatio, setNewRatio] = useState<{ creditCardId: string; ratio: number }>({
-  creditCardId: '',
-  ratio: 1,
+    creditCardId: '',
+    ratio: 1,
   })
-
 
   useEffect(() => {
     if (initialData) {
       setForm(initialData)
     } else {
       setForm({
-        id: 0,
         name: '',
         assetName: '',
         enabled: false,
@@ -77,7 +70,7 @@ export default function FFPFormModal({
     const ratio = Number(newRatio.ratio)
     if (!newRatio.creditCardId || !ratio || ratio < 0.1 || ratio > 5) return
     const newRatios = [
-      ...form.ratios,
+      ...(form.ratios || []),
       {
         ...newRatio,
         creditCardId: Number(newRatio.creditCardId),
@@ -93,34 +86,31 @@ export default function FFPFormModal({
   const handleDeleteRatio = (id: number) => {
     setForm((prev) => ({
       ...prev,
-      ratios: prev.ratios.filter((r) => r.id !== id),
+      ratios: (prev.ratios || []).filter((r) => r.id !== id),
     }))
   }
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0]
-      if (!file) return
+    const file = e.target.files?.[0]
+    if (!file) return
 
-      const formData = new FormData()
-      formData.append('file', file)
+    const formData = new FormData()
+    formData.append('file', file)
 
-      try {
-        const res = await fetch('/api/upload', {
-          method: 'POST',
-          body: formData,
-        })
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      })
 
-        const data = await res.json()
-
-        if (!res.ok || !data.url) throw new Error('Upload failed')
-
-        setForm((prev) => ({ ...prev, assetName: data.url }))
-      } catch (err) {
-        console.error(err)
-        alert('Image upload failed. Please try again.')
-      }
+      const data = await res.json()
+      if (!res.ok || !data.url) throw new Error('Upload failed')
+      setForm((prev) => ({ ...prev, assetName: data.url }))
+    } catch (err) {
+      console.error(err)
+      alert('Image upload failed. Please try again.')
     }
-
+  }
 
   const handleSubmit = async () => {
     const isEdit = !!form.id
@@ -151,8 +141,6 @@ export default function FFPFormModal({
           {initialData ? 'Update FFP' : 'Add FFP'}
         </h2>
 
-
-        {/* Name input */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
           <input
@@ -164,7 +152,6 @@ export default function FFPFormModal({
           />
         </div>
 
-        {/* Logo upload */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">Upload Logo</label>
           <input
@@ -185,8 +172,6 @@ export default function FFPFormModal({
           )}
         </div>
 
-
-        {/* Checkboxes */}
         <div className="flex gap-4 mb-4">
           <label className="inline-flex items-center">
             <input
@@ -211,16 +196,13 @@ export default function FFPFormModal({
           </label>
         </div>
 
-        {/* Transfer Ratios */}
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-700 mb-1">Add Transfer Ratios</label>
           <div className="flex items-center gap-2">
             <select
               name="creditCardId"
               value={newRatio.creditCardId}
-              onChange={(e) =>
-                setNewRatio({ ...newRatio, creditCardId: e.target.value })
-              }
+              onChange={(e) => setNewRatio({ ...newRatio, creditCardId: e.target.value })}
               className="flex-1 border rounded px-3 py-2 focus:outline-none"
             >
               <option value="">Select Credit Card</option>
@@ -234,9 +216,7 @@ export default function FFPFormModal({
               type="number"
               name="ratio"
               value={newRatio.ratio}
-              onChange={(e) =>
-                setNewRatio({ ...newRatio, ratio: parseFloat(e.target.value) })
-              }
+              onChange={(e) => setNewRatio({ ...newRatio, ratio: parseFloat(e.target.value) })}
               className="w-20 border rounded px-2 py-2"
               min="0"
               step="0.1"
@@ -251,7 +231,6 @@ export default function FFPFormModal({
           </div>
         </div>
 
-        {/* Actions */}
         <div className="flex justify-end gap-4">
           <button
             onClick={onClose}
@@ -268,6 +247,5 @@ export default function FFPFormModal({
         </div>
       </div>
     </div>
-
   )
 }
