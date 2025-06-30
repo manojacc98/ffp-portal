@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+
+model CreditCard {
+  id       Int     @id @default(autoincrement())
+  name     String
+  assetName String
+  enabled  Boolean @default(true)
+  archived Boolean @default(false)
+
+  ratios   Ratio[]
+}
+
+model FrequentFlyerProgram {
+  id        Int     @id @default(autoincrement())
+  name      String
+  assetName String
+  enabled   Boolean @default(true)
+  archived  Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  ratios    Ratio[]
+}
+
+model Ratio {
+  id               Int     @id @default(autoincrement())
+  creditCardId     Int
+  ffpId            Int
+  ratio            Float
+
+  creditCard       CreditCard @relation(fields: [creditCardId], references: [id])
+  frequentFlyer    FrequentFlyerProgram @relation(fields: [ffpId], references: [id])
+}
