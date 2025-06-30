@@ -3,27 +3,26 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-
 model CreditCard {
-  id       Int     @id @default(autoincrement())
-  name     String
-  assetName String
-  enabled  Boolean @default(true)
-  archived Boolean @default(false)
-
-  ratios   Ratio[]
-}
-
-model FrequentFlyerProgram {
   id        Int     @id @default(autoincrement())
   name      String
   assetName String
   enabled   Boolean @default(true)
   archived  Boolean @default(false)
+
+  ratios    Ratio[]
+}
+
+model FrequentFlyerProgram {
+  id        Int      @id @default(autoincrement())
+  name      String
+  assetName String
+  enabled   Boolean  @default(true)
+  archived  Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -31,11 +30,11 @@ model FrequentFlyerProgram {
 }
 
 model Ratio {
-  id               Int     @id @default(autoincrement())
-  creditCardId     Int
-  ffpId            Int
-  ratio            Float
+  id            Int                 @id @default(autoincrement())
+  creditCardId  Int
+  ffpId         Int
+  ratio         Float
 
-  creditCard       CreditCard @relation(fields: [creditCardId], references: [id])
-  frequentFlyer    FrequentFlyerProgram @relation(fields: [ffpId], references: [id])
+  creditCard    CreditCard         @relation(fields: [creditCardId], references: [id])
+  frequentFlyer FrequentFlyerProgram @relation(fields: [ffpId], references: [id])
 }

@@ -32,7 +32,7 @@ export default function FFPFormModal({
   creditCards
 }: FFPFormProps) {
   const [form, setForm] = useState<FFP>({
-    id: 0,
+    id: '0',
     name: '',
     assetName: '',
     enabled: false,
