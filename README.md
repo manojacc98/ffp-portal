@@ -63,18 +63,21 @@ This URL is stored as assetName and displayed in the FFP list.
 
 # Folder Structure (Important Files)
 pages/
-├── ffps.tsx                # Admin dashboard for FFPs
-├── login.tsx               # Login page
+├── ffps.tsx # Admin dashboard for FFPs
+├── login.tsx # Login page
 ├── api/
-│   ├── ffps/               # CRUD for FFPs
-│   ├── cards/              # Get credit cards
-│   ├── login.ts            # Auth
-│   ├── me.ts               # Session check
-│   └── upload.ts           # Cloudinary file upload
+│ ├── ffps/ # CRUD for FFPs
+│ ├── cards/ # Get credit cards
+│ ├── login.ts # Auth
+│ ├── logout.ts # Logout session
+│ ├── me.ts # Session check
+│ └── upload.ts # Cloudinary file upload
+
 components/
-├── FFPFormModal.tsx        # Modal for Add/Edit FFP
+├── FFPFormModal.tsx # Modal for Add/Edit FFP
+
 prisma/
-├── schema.prisma           # DB schema
+├── schema.prisma # DB schema
 
 
 # Setup Instructions
