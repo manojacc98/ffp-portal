@@ -42,7 +42,11 @@ export default function FFPFormModal({
     ratios: [],
   })
 
-  const [newRatio, setNewRatio] = useState({ creditCardId: '', ratio: 1 })
+  const [newRatio, setNewRatio] = useState<{ creditCardId: string; ratio: number }>({
+  creditCardId: '',
+  ratio: 1,
+  })
+
 
   useEffect(() => {
     if (initialData) {
